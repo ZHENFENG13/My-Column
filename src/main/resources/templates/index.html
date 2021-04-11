@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>My Column-随心写作，自由表达</title>
+    <link rel="shortcut icon" th:href="@{/images/column-favicon.png}">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my-column.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/sweetalert/sweetalert.css}"/>
+</head>
+
+<body class="LightGreyBg-body">
+<div id="root">
+    <div class="column-app">
+        <main role="main" class="App-main">
+            <div class="ColumnHome">
+                <div class="ColumnPageHeader-Wrapper">
+                    <div>
+                        <div class="ColumnPageHeader" style="">
+                            <div class="ColumnPageHeader-content">
+                                <a th:href="@{/index}">
+                                    <img th:src="@{/images/my-column-logo.png}">
+                                </a>
+                                <div class="ColumnPageHeader-Button">
+                                    <a th:href="@{/articleEdit}">
+                                        <button type="button" class="Button ColumnPageHeader-WriteButton Button--blue">
+                                            <img class="edit-icon" th:src="@{/images/edit.png}">
+                                            写文章
+                                        </button>
+                                    </a>
+                                    <div class="Popover">
+                                        <a th:href="@{/personal}">
+                                            <button title="个人中心" id="Popover1-toggle" aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    aria-owns="Popover1-content" type="button"
+                                                    class="Button ColumnPageHeader-MenuToggler Button--plain">
+                                                <img th:src="@{/images/setting.png}" style="height: 24px;width: 24px;">
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ColumnHomeTop">
+                    <h1 class="ColumnHomeTop-logo">知乎专栏</h1>
+                    <h2 class="ColumnHomeTop-subTitle">随心写作，自由表达</h2>
+                    <a target="_blank" type="button" class="Button ColumnHomeTop-writeButton Button--grey"
+                       th:href="@{/articleEdit}">开始写文章</a>
+                </div>
+                <div class="ColumnHomeRecommendation" id="discovery">
+                    <h3 class="ColumnHomeTitle">
+                        <div class="ColumnHomeTitle-text">专栏 · 发现</div>
+                        <div class="ColumnHomeTitle-line"></div>
+                    </h3>
+                    <div class="ColumnHomeRecommendation-cardContainer">
+                        <!-- 专栏列表 -->
+                    </div>
+                    <button type="button" onclick="renderColumns();"
+                            class="Button ColumnHomeRecommendation-refreshButton Button--grey Button--withIcon Button--withLabel">
+                            <span style="display:inline-flex;align-items:center">&#8203;
+                                <img class="refresh-icon" th:src="@{/images/refresh.png}">
+                            </span>换一换
+                    </button>
+                </div>
+                <div class="ColumnHomeBottom ColumnHome-HomeBttom">
+                    <h3 class="ColumnHomeBottom-title">My Column</h3>
+                    <footer class="ColumnHomeBottom-footer">
+                        <span>© 2020 十三</span>
+                        <span> · </span>
+                        <a target="_blank" href="https://github.com/ZHENFENG13/My-Column" rel="noopener noreferrer">GitHub</a>
+                        <span> · </span>
+                        <a target="_blank" href="https://gitee.com/ZHENFENG13/My-Column" rel="noopener noreferrer">Gitee</a>
+                        <span>·</span>
+                        <a target="_blank" href="https://www.lanqiao.cn/courses/3228" rel="noopener noreferrer">开发文档</a>
+                    </footer>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        renderColumns();
+    })
+
+    function renderColumns() {
+        // 1. 向后端发送请求获取随机的专栏列表
+        $.ajax({
+            type: 'GET',//方法类型
+            url: '/randomColumns',
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    var columnsArr = result.data;
+                    // 数据判空
+                    if (columnsArr.length == 0) {
+                        swal("无更多专栏数据", {
+                            icon: "error",
+                        });
+                    }
+
+                    //2. 循环封装字符串
+                    var columnsHtml = "";
+                    for (var i = 0; i < columnsArr.length; i++) {
+
+                        columnsHtml += "<a class=\"ColumnHomeColumnCard ColumnHomeRecommendation-card\" target=\"_blank\" href=\"/columnPage?columnId=" + columnsArr[i].columnId + "\" rel=\"noopener noreferrer\">\n" +
+                            "                                    <img class=\"Avatar Avatar--medium Avatar--round ColumnHomeColumnCard-Avatar\" width=\"48\" height=\"48\" src=\"" + columnsArr[i].columnCover + "\" alt=\"专栏图像\">\n" +
+                            "                                    <div class=\"ColumnHomeColumnCard-info\">\n" +
+                            "                                        <div class=\"ColumnHomeColumnCard-title\">" + columnsArr[i].columnName + "</div>\n" +
+                            "                                        <div class=\"ColumnHomeColumnCard-description\">" + columnsArr[i].columnIntroduce + "</div>\n" +
+                            "                                    </div>\n" +
+                            "                                    <button type=\"button\" class=\"Button ColumnHomeColumnCard-followButton Button--green\">进入专栏\n" +
+                            "                                    </button>\n" +
+                            "                                </a>"
+                    }
+
+                    //3. 渲染到页面
+                    $('.ColumnHomeRecommendation-cardContainer').html(columnsHtml);
+                } else {
+                    swal("获取专栏信息出错", {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("获取专栏信息出错", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+</script>
+</html>

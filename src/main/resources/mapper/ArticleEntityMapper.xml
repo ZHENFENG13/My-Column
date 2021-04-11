@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.column.dao.ArticleEntityMapper">
+  <resultMap id="BaseResultMap" type="com.my.column.entity.ArticleEntity">
+    <id column="article_id" jdbcType="BIGINT" property="articleId" />
+    <result column="column_id" jdbcType="BIGINT" property="columnId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+    <result column="article_cover_image" jdbcType="VARCHAR" property="articleCoverImage" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.my.column.entity.ArticleEntity">
+    <result column="article_content" jdbcType="LONGVARCHAR" property="articleContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    article_id, column_id, user_id, article_title, article_cover_image, create_time, 
+    update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    article_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_column_article
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </select>
+
+  <select id="findArticleList" parameterType="Map" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    from tb_column_article
+    <where>
+      <if test="columnId!=null and columnId!=''">
+        and column_id = #{columnId}
+      </if>
+    </where>
+    order by article_id desc
+    <if test="start!=null and limit!=null">
+      limit #{start},#{limit}
+    </if>
+  </select>
+
+  <select id="getTotalArticles" parameterType="Map" resultType="int">
+    select count(*)
+    from tb_column_article
+    <where>
+      <if test="columnId!=null and columnId!=''">
+        and column_id = #{columnId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectTotalArticleByColumnId" parameterType="java.lang.Long" resultType="int">
+    select count(*)
+    from tb_column_article
+    where column_id = #{columnId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_column_article
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.my.column.entity.ArticleEntity">
+    insert into tb_column_article (article_id, column_id, user_id, 
+      article_title, article_cover_image, create_time, 
+      update_time, article_content)
+    values (#{articleId,jdbcType=BIGINT}, #{columnId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{articleTitle,jdbcType=VARCHAR}, #{articleCoverImage,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{articleContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.my.column.entity.ArticleEntity">
+    insert into tb_column_article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="articleId != null">
+        article_id,
+      </if>
+      <if test="columnId != null">
+        column_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="articleTitle != null">
+        article_title,
+      </if>
+      <if test="articleCoverImage != null">
+        article_cover_image,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="articleContent != null">
+        article_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="articleId != null">
+        #{articleId,jdbcType=BIGINT},
+      </if>
+      <if test="columnId != null">
+        #{columnId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null">
+        #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleCoverImage != null">
+        #{articleCoverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleContent != null">
+        #{articleContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.my.column.entity.ArticleEntity">
+    update tb_column_article
+    <set>
+      <if test="columnId != null">
+        column_id = #{columnId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null">
+        article_title = #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleCoverImage != null">
+        article_cover_image = #{articleCoverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleContent != null">
+        article_content = #{articleContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.my.column.entity.ArticleEntity">
+    update tb_column_article
+    set column_id = #{columnId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_cover_image = #{articleCoverImage,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      article_content = #{articleContent,jdbcType=LONGVARCHAR}
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.my.column.entity.ArticleEntity">
+    update tb_column_article
+    set column_id = #{columnId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      article_title = #{articleTitle,jdbcType=VARCHAR},
+      article_cover_image = #{articleCoverImage,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </update>
+</mapper>

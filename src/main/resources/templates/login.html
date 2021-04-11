@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>My Column-随心写作，自由表达</title>
+    <link rel="shortcut icon" th:href="@{/images/column-favicon.png}">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my-column.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/sweetalert/sweetalert.css}"/>
+</head>
+<body>
+<div id="root">
+    <div>
+        <div class="LoadingBar"></div>
+        <main role="main" class="login-main">
+            <div class="SignFlowHomepage">
+                <div class="SignFlowHomepage-content">
+                    <img class="SignFlowHomepage-logo"
+                         th:src="@{/images/my-column-logo2x.png}"
+                    />
+                    <div class="css-zvnmar">
+                        <div class="SignContainer-content">
+                            <div class="SignContainer-inner">
+                                <form id="loginForm" onsubmit="return false;" action="##"
+                                      class="SignFlow Login-content">
+                                    <div class="SignFlow-tabs">
+                                        <div class="SignFlow-tab SignFlow-tab--active">
+                                            登录
+                                        </div>
+                                    </div>
+                                    <div class="SignFlow-account">
+                                        <div class="SignFlowInput SignFlow-accountInputContainer"><label
+                                                class="SignFlow-accountInput Input-wrapper"><input name="loginName"
+                                                                                                   id="loginName"
+                                                                                                   type="text"
+                                                                                                   class="Input"
+                                                                                                   placeholder="手机号"></label>
+                                        </div>
+                                    </div>
+                                    <div class="SignFlow-password">
+                                        <div class="SignFlowInput"><label
+                                                class="SignFlow-passwordInput Input-wrapper"><input name="password"
+                                                                                                    id="password"
+                                                                                                    type="password"
+                                                                                                    class="Input"
+                                                                                                    placeholder="密码"></label>
+                                        </div>
+                                    </div>
+                                    <div class="Captcha SignFlow-captchaContainer" style="">
+                                        <div>
+                                            <div class="SignFlowInput"><label class="Input-wrapper"><input
+                                                    id="verifyCode" name="verifyCode" type="text" tabindex="0"
+                                                    class="Input"
+                                                    placeholder="验证码" value=""></label>
+                                            </div>
+                                            <span class="Captcha-englishImage"><div
+                                                    class="Captcha-englishContainer"><img data-tooltip="看不清楚？换一张"
+                                                                                          class="Captcha-englishImg"
+                                                                                          th:src="@{/common/captcha}"
+                                                                                          onclick="this.src='/common/captcha?d='+new Date()*1"
+                                                                                          alt="单击图片刷新！"></div></span>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit"
+                                            class="Button SignFlow-submitButton Button--primary Button--blue"
+                                            onclick="login()">登录
+                                    </button>
+                                    <button type="submit"
+                                            class="Button SignFlow-submitButton Button--info Button--grey"
+                                            onclick="toRegister()">无账号，去注册
+                                    </button>
+                                    <div class="SignContainer-tip">
+                                        <div>
+                                            <div>
+                                                未注册手机验证后自动登录，注册即代表同意
+                                                <a href="##">《用户协议》</a>
+                                                <a href="##">《隐私保护指引》</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="SignFlowHomepage-footer">
+                    <div class="WebLinks">
+                        <a target="_blank" rel="noopener noreferrer" href="##">My Column</a>
+                    </div>
+                    <div class="WebRights">
+                        <span>© 2020 十三</span>
+                        <span> · </span>
+                        <a target="_blank" href="https://github.com/ZHENFENG13/My-Column" rel="noopener noreferrer">GitHub</a>
+                        <span> · </span>
+                        <a target="_blank" href="https://gitee.com/ZHENFENG13/My-Column" rel="noopener noreferrer">Gitee</a>
+                        <span>·</span>
+                        <a target="_blank" href="https://www.lanqiao.cn/courses/3228" rel="noopener noreferrer">开发文档</a>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/js/public.js}"></script>
+<script th:src="@{/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+
+    function toRegister() {
+        window.location.href = '/register';
+    }
+
+    function login() {
+        var loginName = $("#loginName").val();
+        if (!validPhoneNumber(loginName)) {
+            swal('请输入正确的登录名(即手机号)', {
+                icon: "error",
+            });
+            return false;
+        }
+        var password = $("#password").val();
+        if (!validPassword(password)) {
+            swal('请输入正确的密码格式(6-20位字符和数字组合)', {
+                icon: "error",
+            });
+            return false;
+        }
+        var verifyCode = $("#verifyCode").val();
+        if (!validLength(verifyCode, 5)) {
+            swal('请输入正确的验证码', {
+                icon: "error",
+            });
+            return false;
+        }
+        //验证
+        var params = $("#loginForm").serialize();
+        var url = '/login';
+        $.ajax({
+            type: 'POST',//方法类型
+            url: url,
+            data: params,
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    window.location.href = '/index';
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("操作失败", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+</script>
+</html>

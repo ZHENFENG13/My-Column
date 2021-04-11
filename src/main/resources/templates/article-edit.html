@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>My Column-随心写作，自由表达</title>
+    <link rel="shortcut icon" th:href="@{/images/column-favicon.png}">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my-column.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/plugins/jquery/growl/growl.css}"/>
+</head>
+
+<body class="LightGreyBg-body">
+<div id="root">
+    <div class="column-app">
+        <main role="main" class="App-main">
+            <div class="WriteIndexLayout">
+                <div class="ColumnPageHeader-Wrapper">
+                    <div>
+                        <div class="ColumnPageHeader">
+                            <div class="ColumnPageHeader-content">
+                                <a th:href="@{/index}">
+                                    <img th:src="@{/images/my-column-logo.png}">
+                                </a>
+                                <i class="ColumnPageHeader-Line"></i>
+                                <div class="ColumnPageHeader-Title">
+                                    <div class="WriteIndex-pageTitleWrapper">
+                                        <div class="WriteIndex-pageTitle">写文章</div>
+                                        <div class="WriteIndex-pageSubTitle"></div>
+                                    </div>
+                                </div>
+                                <div class="ColumnPageHeader-Button">
+                                    <div class="PublishPanel-wrapper">
+                                        <button type="button"
+                                                class="Button PublishPanel-triggerButton Button--blue"
+                                                onclick="saveArticle()">
+                                            发布
+                                        </button>
+                                    </div>
+                                    <div class="Popover">
+                                        <a th:href="@{/personal}">
+                                            <button title="个人中心" id="Popover1-toggle" aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    aria-owns="Popover1-content" type="button"
+                                                    class="Button ColumnPageHeader-MenuToggler Button--plain">
+                                                <img th:src="@{/images/setting.png}"
+                                                     style="height: 24px;width: 24px;">
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="WriteIndexLayout-main WriteIndex">
+                    <div class="WriteCover-wrapper">
+                        <div class="WriteCover-previewWrapper WriteCover-previewWrapper--empty">
+                            <label class="UploadPicture-wrapper">
+                                <th:block th:if="${null == article}">
+                                    <img id="articleCoverImg" th:src="@{/images/article-cover.png}"
+                                         style="display:block;height: 252px; width: 660px;">
+                                </th:block>
+                                <th:block th:unless="${null == article}">
+                                    <img id="articleCoverImg" th:src="${article.articleCoverImage}"
+                                         style="display:block;height: 252px; width: 660px;">
+                                </th:block>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="hidden" id="articleId"
+                               th:value="${article!=null and article.articleId!=null }?${article.articleId}: 0">
+                        <label class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
+                            <input class="Input" id="articleTitle" placeholder="请输入标题（最多 50 个字）"
+                                   th:value="${article!=null and article.articleTitle!=null }?${article.articleTitle}: ''"
+                            />
+                        </label>
+                    </div>
+                    <div class="PostEditor-wrapper">
+                        <div id="columnEditor"
+                             th:utext="${article!=null and article.articleContent !=null}?${article.articleContent}:''">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/js/public.js}"></script>
+<script th:src="@{/plugins/ajaxupload/ajaxupload.js}" type="text/javascript"></script>
+<script th:src="@{/plugins/jquery/growl/growl.js}" type="text/javascript"></script>
+<script type="text/javascript" src="https://unpkg.com/wangeditor/dist/wangEditor.min.js"></script>
+<script type="text/javascript">
+
+    // 初始化富文本编辑器 start
+
+    const E = window.wangEditor
+    const editorD = new E('#columnEditor')
+    // 设置编辑区域高度为 750px
+    editorD.config.height = 750
+    //配置服务端图片上传地址
+    editorD.config.uploadImgServer = '/uploadFiles'
+    editorD.config.uploadFileName = 'files'
+    //限制图片大小 2M
+    editorD.config.uploadImgMaxSize = 2 * 1024 * 1024
+    //限制一次最多能传几张图片 一次最多上传 5 个图片
+    editorD.config.uploadImgMaxLength = 5
+    //隐藏插入网络图片的功能
+    editorD.config.showLinkImg = false
+    editorD.config.uploadImgHooks = {
+        // 图片上传并返回了结果，图片插入已成功
+        success: function (xhr) {
+            console.log('success', xhr)
+        },
+        // 图片上传并返回了结果，但图片插入时出错了
+        fail: function (xhr, editor, resData) {
+            console.log('fail', resData)
+        },
+        // 上传图片出错，一般为 http 请求的错误
+        error: function (xhr, editor, resData) {
+            console.log('error', xhr, resData)
+        },
+        // 上传图片超时
+        timeout: function (xhr) {
+            console.log('timeout')
+        },
+        customInsert: function (insertImgFn, result) {
+            if (result != null && result.resultCode == 200) {
+                // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
+                result.data.forEach(img => {
+                    insertImgFn(img)
+                });
+            } else {
+                alert("error");
+            }
+        }
+    }
+    editorD.create();
+
+    // 初始化富文本编辑器 end
+
+    // 图片上传插件初始化
+    new AjaxUpload('#articleCoverImg', {
+        action: '/uploadFile',
+        name: 'file',
+        autoSubmit: true,
+        responseType: "json",
+        onSubmit: function (file, extension) {
+            if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))) {
+                alert('只支持jpg、png、gif格式的文件！');
+                return false;
+            }
+        },
+        onComplete: function (file, r) {
+            if (r != null && r.resultCode == 200) {
+                $("#articleCoverImg").attr("src", r.data);
+                $("#articleCoverImg").attr("style", "display:block;height: 252px; width: 660px;");
+                return false;
+            } else {
+                alert("error");
+            }
+        }
+    });
+
+    function saveArticle() {
+        var articleId = $('#articleId').val();
+        var articleCoverImg = $('#articleCoverImg')[0].src;
+        var articleTitle = $('#articleTitle').val();
+        var articleContent = editorD.txt.html();
+        if (isNull(articleCoverImg) || articleCoverImg.indexOf('article-cover.png') != -1) {
+            $.growl.error({
+                title: "error",
+                message: "封面图片不能为空!"
+            });
+            return;
+        }
+        if (isNull(articleTitle)) {
+            $.growl.error({
+                title: "error",
+                message: "请输入文章标题!"
+            });
+            return;
+        }
+        if (!validLength(articleTitle, 50)) {
+            $.growl.error({
+                title: "error",
+                message: "文章标题过长!"
+            });
+            return;
+        }
+        if (isNull(articleContent)) {
+            $.growl.error({
+                title: "error",
+                message: "请输入文章内容!"
+            });
+            return;
+        }
+        if (!validLength(articleContent, 10000)) {
+            $.growl.error({
+                title: "error",
+                message: "文章内容过长!"
+            });
+            return;
+        }
+        var url = '/article/save';
+        var editResultMessage = '保存成功';
+        var data = {
+            "articleCoverImage": articleCoverImg,
+            "articleTitle": articleTitle,
+            "articleContent": articleContent
+        };
+        if (articleId > 0) {
+            url = '/article/update';
+            editResultMessage = '修改成功';
+            data = {
+                "articleId": articleId,
+                "articleCoverImage": articleCoverImg,
+                "articleTitle": articleTitle,
+                "articleContent": articleContent
+            };
+        }
+        console.log(data);
+        $.ajax({
+            type: 'POST',//方法类型
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $.growl.notice({
+                        title: "info",
+                        message: editResultMessage
+                    });
+                    // 跳转至我的专栏页面
+                    window.location.href = "/myColumnPage";
+                } else {
+                    $.growl.error({
+                        title: "error",
+                        message: result.message
+                    });
+                }
+                ;
+            },
+            error: function () {
+                $.growl.error({
+                    title: "error",
+                    message: "操作失败"
+                });
+            }
+        });
+    }
+</script>
+</html>

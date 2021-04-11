@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>My Column-随心写作，自由表达</title>
+    <link rel="shortcut icon" th:href="@{/images/column-favicon.png}">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my-column.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/sweetalert/sweetalert.css}"/>
+    <link th:href="@{/plugins/bootstrap/bootstrap-modal.css}" rel="stylesheet">
+</head>
+
+<body class="LightGreyBg-body">
+<div id="root">
+    <div class="column-app">
+        <main role="main" class="App-main">
+            <div class="ColumnHome">
+                <div class="ColumnPageHeader-Wrapper">
+                    <div>
+                        <div class="ColumnPageHeader" style="">
+                            <div class="ColumnPageHeader-content">
+                                <a th:href="@{/index}">
+                                    <img th:src="@{/images/my-column-logo.png}">
+                                </a>
+                                <i class="ColumnPageHeader-Line"></i>
+                                <div class="ColumnPageHeader-Title">
+                                    <div class="ColumnPageHeader-TitleName">
+                                        <span class="ColumnPageHeader-TitleMeta">专栏</span>
+                                        <a class="ColumnLink ColumnPageHeader-TitleColumn"
+                                           href="##" th:text="${column.columnName}">程序员有故事</a>
+                                    </div>
+                                </div>
+                                <div class="ColumnPageHeader-Button">
+                                    <a th:href="@{/articleEdit}">
+                                        <button type="button" class="Button ColumnPageHeader-WriteButton Button--blue">
+                                            <img class="edit-icon" th:src="@{/images/edit.png}">
+                                            写文章
+                                        </button>
+                                    </a>
+                                    <div class="Popover">
+                                        <a th:href="@{/personal}">
+                                            <button title="个人中心" id="Popover1-toggle" aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    aria-owns="Popover1-content" type="button"
+                                                    class="Button ColumnPageHeader-MenuToggler Button--plain">
+                                                <img th:src="@{/images/setting.png}" style="height: 24px;width: 24px;">
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Card">
+                    <div class="css-1xy3kyp">
+                        <div class="css-zyehvu" th:text="${column.columnName}">程序员有故事</div>
+                        <div class="css-1bnklpv" th:text="${column.columnIntroduce}">程序员的工作，程序员的生活，程序员的故事</div>
+                        <div class="css-16qos9m">
+                            <div class="AuthorInfo AuthorInfo--plain" style="display: flex;">
+                                <span class="UserLink AuthorInfo-avatarWrapper">
+                                    <div class="Popover">
+                                        <div id="Popover3-toggle">
+                                            <a class="UserLink-link"
+                                               href="##">
+                                                <img class="Avatar AuthorInfo-avatar" width="24" height="24"
+                                                     th:src="@{${columnAuthor.headImgUrl}}">
+                                            </a>
+                                        </div>
+                                </div>
+                                </span>
+                                <div class="AuthorInfo-content">
+                                    <div class="AuthorInfo-head"><span class="UserLink AuthorInfo-name"><div
+                                            class="Popover"><div><a
+                                            class="UserLink-link" th:text="${columnAuthor.loginName}">十三</a></div></div></span>
+                                    </div>
+                                    <div class="AuthorInfo-detail">
+                                        <div class="AuthorInfo-badge"></div>
+                                    </div>
+                                </div>
+                                <div class="css-1uan5v7"><th:block th:text="${' · '+columnArticlesCount+'篇内容'}"></th:block></div>
+                            </div>
+                        </div>
+                        <!-- 如果是自己的专栏则显示该按钮 -->
+                        <th:block th:if="${session.myColumnUser.userId==columnAuthor.userId}">
+                            <div class="css-kf9x3u">
+                                <button type="button" class="Button Button--blue" onclick="openUpdateModal()">修改专栏
+                                </button>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="Card css-1voxft1">
+                    <div class="">
+                        <th:block th:if="${#lists.isEmpty(articlePageResult.list)}">
+                            <div class="css-8txec3">
+                                <img style="width: 100%;" th:src="@{/images/null-content.svg}">
+                            </div>
+                        </th:block>
+                        <th:block th:unless="${#lists.isEmpty(articlePageResult.list)}">
+                            <th:block th:each="articleEntity : ${articlePageResult.list}">
+                                <div class="css-8txec3">
+                                    <div class="ContentItem ArticleItem">
+                                        <h2 class="ContentItem-title"><a
+                                                th:href="@{${'/article/'+articleEntity.articleId}}"
+                                                target="_blank"
+                                                th:text="${articleEntity.articleTitle}">xx</a>
+                                        </h2>
+                                        <div class="RichContent is-collapsed">
+                                            <div class="RichContent-cover">
+                                                <div class="RichContent-cover-inner"><a target="_blank"
+                                                                                        th:href="@{${'/article/'+articleEntity.articleId}}"><img
+                                                        th:src="@{${articleEntity.articleCoverImage}}"
+                                                        alt="cover"></a></div>
+                                            </div>
+                                            <div class="RichContent-inner">
+                                                <span class="RichText ztext CopyrightRichText-richText">
+                                                    <a target="_blank"
+                                                       th:href="@{${'/article/'+articleEntity.articleId}}"> 查看详情</a>
+                                                </span>
+                                            </div>
+                                            <div class="ContentItem-actions">
+                                                <label class="Button ContentItem-action Button--plain Button--withIcon Button--withLabel"
+                                                       style="margin: 6px 0;">
+                                                    <span style="display: inline-flex; align-items: center;">&#8203;</span>
+                                                    <th:block
+                                                            th:text="${#dates.format(articleEntity.createTime, 'yyyy-MM-dd HH:mm:ss')}"></th:block>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <div id="J_orderListPages">
+                                <div class="my-column-pagenavi">
+                                    <th:block th:if="${articlePageResult.currPage-2 >=1}"><a
+                                            class="numbers"
+                                            th:href="@{'/columnPage?columnId='+${column.columnId}+'&page=' + ${articlePageResult.currPage-2}}"
+                                            th:text="${articlePageResult.currPage -2}">1</a>
+                                    </th:block>
+                                    <th:block th:if="${articlePageResult.currPage-1 >=1}"><a
+                                            class="numbers"
+                                            th:href="@{'/columnPage?columnId='+${column.columnId}+'&page=' + ${articlePageResult.currPage-1}}"
+                                            th:text="${articlePageResult.currPage -1}">1</a>
+                                    </th:block>
+                                    <a href="##" class="numbers current" th:text="${articlePageResult.currPage}">1</a>
+                                    <th:block th:if="${articlePageResult.currPage+1<=articlePageResult.totalPage}"><a
+                                            class="numbers"
+                                            th:href="@{'/columnPage?columnId='+${column.columnId}+'&page=' + ${articlePageResult.currPage+1}}"
+                                            th:text="${articlePageResult.currPage +1}">1</a></th:block>
+                                    <th:block th:if="${articlePageResult.currPage+2<=articlePageResult.totalPage}"><a
+                                            class="numbers"
+                                            th:href="@{'/columnPage?columnId='+${column.columnId}+'&page='+ ${articlePageResult.currPage+2}}"
+                                            th:text="${articlePageResult.currPage +2}">1</a></th:block>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <!-- 模态框（Modal） -->
+                    <div class="modal fade" id="columnInfoModal" tabindex="-1" role="dialog"
+                         aria-labelledby="columnInfoModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h6 class="modal-title" id="columnInfoModalLabel">专栏信息修改</h6>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="personalInfoForm">
+                                        <input type="hidden" id="columnId" th:value="${column.columnId}">
+                                        <div class="form-group">
+                                            <img id="columnCoverImage"
+                                                 th:src="@{${column.columnCover}}"
+                                                 style="width:80px ;height: 80px;display:block;">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="Button Button--blue" style="margin-bottom: 5px;"
+                                                    id="uploadCoverImg">
+                                                上传封面
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="columnName" class="control-label">专栏名称:</label>
+                                            <input type="hidden" id="userId">
+                                            <input type="text" class="form-control" id="columnName"
+                                                   name="columnName"
+                                                   placeholder="请输入专栏名称"
+                                                   required="true">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="columnIntroduce" class="control-label">专栏简介:</label>
+                                            <input type="text" class="form-control" id="columnIntroduce"
+                                                   name="columnIntroduce"
+                                                   placeholder="请输入专栏简介"
+                                                   required="true">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="Button Button--grey" data-dismiss="modal">取消
+                                    </button>
+                                    <button type="button" class="Button Button--blue" id="saveButton">确认
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal -->
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/bootstrap3.js}"></script>
+<script th:src="@{/js/public.js}"></script>
+<script th:src="@{/plugins/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/plugins/ajaxupload/ajaxupload.js}" type="text/javascript"></script>
+<script type="text/javascript">
+
+    // 图片上传插件初始化
+    new AjaxUpload('#uploadCoverImg', {
+        action: '/uploadFile',
+        name: 'file',
+        autoSubmit: true,
+        responseType: "json",
+        onSubmit: function (file, extension) {
+            if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))) {
+                alert('只支持jpg、png、gif格式的文件！');
+                return false;
+            }
+        },
+        onComplete: function (file, r) {
+            if (r != null && r.resultCode == 200) {
+                $("#columnCoverImage").attr("src", r.data);
+                return false;
+            } else {
+                alert("error");
+            }
+        }
+    });
+
+    /**
+     * 打开编辑框
+     */
+
+    function openUpdateModal() {
+        $('#columnInfoModal').modal('show');
+    }
+
+
+    //绑定modal上的保存按钮
+    $('#saveButton').click(function () {
+        var columnName = $("#columnName").val();
+        if (columnName.trim().length < 2) {
+            swal("请输入正确的专栏名称", {
+                icon: "error",
+            });
+            return;
+        }
+        var columnIntroduce = $("#columnIntroduce").val();
+        if (columnIntroduce.trim().length < 4) {
+            swal("请输入正确的专栏介绍", {
+                icon: "error",
+            });
+            return;
+        }
+        var columnCover = $('#columnCoverImage')[0].src;
+        if (columnCover.trim().length < 2) {
+            swal("请上传封面图", {
+                icon: "error",
+            });
+            return;
+        }
+        var columnId = $("#columnId").val();
+        var data = {
+            "columnId": columnId,
+            "columnName": columnName,
+            "columnCover": columnCover,
+            "columnIntroduce": columnIntroduce,
+        };
+        $.ajax({
+            type: 'POST',//方法类型
+            url: '/updateColumnInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    $('#columnInfoModal').modal('hide');
+                    window.location.reload();
+                } else {
+                    $('#columnInfoModal').modal('hide');
+                    alert(result.message);
+                }
+                ;
+            },
+            error: function () {
+                alert('操作失败');
+            }
+        });
+    });
+</script>
+</html>

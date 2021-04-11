@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>My Column-随心写作，自由表达</title>
+    <link rel="shortcut icon" th:href="@{/images/column-favicon.png}">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/my-column.css}"/>
+</head>
+
+<body class="LightGreyBg-body">
+<div id="root">
+    <div class="column-app">
+        <main role="main" class="App-main">
+            <div class="ColumnHome">
+                <div class="ColumnPageHeader-Wrapper">
+                    <div>
+                        <div class="ColumnPageHeader" style="">
+                            <div class="ColumnPageHeader-content">
+                                <a th:href="@{/index}">
+                                    <img th:src="@{/images/my-column-logo.png}">
+                                </a>
+                                <i class="ColumnPageHeader-Line"></i>
+                                <div class="ColumnPageHeader-Title">
+                                    <div class="ColumnPageHeader-TitleName">
+                                        <span class="ColumnPageHeader-TitleMeta">专栏</span>
+                                        <a class="ColumnLink ColumnPageHeader-TitleColumn"
+                                           href="##" th:text="${column.columnName}">程序员有故事</a>
+                                    </div>
+                                </div>
+                                <div class="ColumnPageHeader-Button">
+                                    <a th:href="@{/articleEdit}">
+                                        <button type="button" class="Button ColumnPageHeader-WriteButton Button--blue">
+                                            <img class="edit-icon" th:src="@{/images/edit.png}">
+                                            写文章
+                                        </button>
+                                    </a>
+                                    <div class="Popover">
+                                        <a th:href="@{/personal}">
+                                            <button title="个人中心" id="Popover1-toggle" aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    aria-owns="Popover1-content" type="button"
+                                                    class="Button ColumnPageHeader-MenuToggler Button--plain">
+                                                <img th:src="@{/images/setting.png}" style="height: 24px;width: 24px;">
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Card">
+                    <div class="css-1xy3kyp">
+                        <div class="css-zyehvu" th:text="${column.columnName}">程序员有故事</div>
+                        <div class="css-1bnklpv" th:text="${column.columnIntroduce}">程序员的工作，程序员的生活，程序员的故事</div>
+                        <div class="css-16qos9m">
+                            <div class="AuthorInfo AuthorInfo--plain" style="display: flex;">
+                                <span class="UserLink AuthorInfo-avatarWrapper">
+                                    <div class="Popover">
+                                        <div id="Popover3-toggle">
+                                                <img class="Avatar AuthorInfo-avatar" width="24" height="24"
+                                                     th:src="@{${articleAuthor.headImgUrl}}">
+                                        </div>
+                                </div>
+                                </span>
+                                <div class="AuthorInfo-content">
+                                    <div class="AuthorInfo-head"><span class="UserLink AuthorInfo-name"><div
+                                            class="Popover"><div><a
+                                            class="UserLink-link"
+                                            th:text="${articleAuthor.loginName}">十三</a></div></div></span>
+                                    </div>
+                                    <div class="AuthorInfo-detail">
+                                        <div class="AuthorInfo-badge"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="css-kf9x3u">
+                            <a th:href="@{${'/columnPage?columnId='+article.columnId}}">
+                                <button type="button" class="Button Button--blue">查看专栏</button>
+                            </a>
+                            <th:block th:if="${session.myColumnUser.userId==article.userId}">
+                                <a th:href="@{${'/articleEdit/'+article.articleId}}">
+                                    <button type="button" class="Button Button--blue">修改文章</button>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 详情 -->
+                <div class="Card css-1voxft1">
+                    <div class="css-8txec3">
+                        <div class="ContentItem ArticleItem">
+                            <h2 class="ContentItem-title"th:text="${article.articleTitle}">
+                            </h2>
+                            <div class="ContentItem-meta">
+                                <div class="AuthorInfo ArticleItem-authorInfo AuthorInfo--plain" style="margin: 6px 0;">
+                                <span class="UserLink AuthorInfo-avatarWrapper"><div class="Popover"><div
+                                        id="Popover27-toggle">
+                                    <img class="Avatar AuthorInfo-avatar" width="24" height="24"
+                                            th:src="@{${articleAuthor.headImgUrl}}"></div></div></span>
+                                    <div class="AuthorInfo-content">
+                                        <div class="AuthorInfo-head"><span class="UserLink AuthorInfo-name"><div
+                                                class="Popover"><div id="Popover28-toggle"><a
+                                                class="UserLink-link" th:text="${articleAuthor.loginName}">十三</a></div></div></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="RichContent">
+                                <div><img th:src="@{${article.articleCoverImage}}" class="ArticleItem-image"></div>
+                                <div class="RichContent-inner">
+                                <span class="RichText ztext" th:utext="${article.articleContent}">
+
+                                </span>
+                                </div>
+                                <div class="ContentItem-time">
+                                    <span th:text="${'发布于'+#dates.format(article.createTime, 'yyyy-MM-dd')}">发布于 10-21</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
