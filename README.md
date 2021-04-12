@@ -16,7 +16,7 @@
 
 ### 《SpringBoot + Mybatis + Thymeleaf 专栏项目开发实战》(支付减免优惠券码 nZiF4DN9 )
 
-[![lesson-03](https://newbee-mall.oss-cn-beijing.aliyuncs.com/poster/store/lesson-08.png)](https://www.shiyanlou.com/courses/3228)
+[![lesson-08](https://newbee-mall.oss-cn-beijing.aliyuncs.com/poster/store/lesson-08.png)](https://www.shiyanlou.com/courses/3228)
 
 - [**第01课：Spring Boot 项目开发环境**](https://www.shiyanlou.com/courses/3228)
 - [第02课：快速构建 Spring Boot 应用](https://www.shiyanlou.com/courses/3228)
@@ -42,7 +42,7 @@
 > 大家有任何问题或者建议都可以在 [issues](https://github.com/ZHENFENG13/My-Column/issues) 中反馈给我，我会慢慢完善这个项目。
 
 - 我的邮箱：2449207463@qq.com
-- QQ技术交流群：796794009 881582471 658365129(已满)
+- QQ技术交流群：719099151 796794009
 
 ## 效果预览
 
