@@ -26,7 +26,7 @@
     select
     <include refid="Base_Column_List" />
     from tb_user
-    where login_name = #{userId,jdbcType=BIGINT} limit 1
+    where login_name = #{loginName} limit 1
   </select>
 
   <select id="selectByLoginNameAndPasswd" resultMap="BaseResultMap">
