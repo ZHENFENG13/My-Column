@@ -11,17 +11,16 @@ import com.my.column.common.Constants;
 import com.my.column.util.Result;
 import com.my.column.util.ResultGenerator;
 import com.my.column.util.SystemUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -33,7 +32,7 @@ import java.util.*;
  * @author 13
  * @qq交流群 719099151
  * @email 2449207463@qq.com
- * @link https://github.com/ZHENFENG13/My-Column
+ * @link https://github.com/ZHENFENG13/My-BBS
  */
 @Controller
 public class UploadController {
@@ -72,7 +71,7 @@ public class UploadController {
     @ResponseBody
     public Result uploadV2(HttpServletRequest httpServletRequest) throws URISyntaxException {
         List<MultipartFile> multipartFiles = new ArrayList<>(8);
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(httpServletRequest.getSession().getServletContext());
+        StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
         if (multipartResolver.isMultipart(httpServletRequest)) {
             MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) httpServletRequest;
             Iterator<String> iter = multiRequest.getFileNames();

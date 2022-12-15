@@ -9,7 +9,7 @@ package com.my.column.service;
 
 import com.my.column.entity.UserEntity;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 public interface UserService {
 

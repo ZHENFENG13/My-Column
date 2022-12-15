@@ -10,14 +10,14 @@ import com.my.column.service.ColumnService;
 import com.my.column.service.UserService;
 import com.my.column.util.Result;
 import com.my.column.util.ResultGenerator;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ArticleController {
