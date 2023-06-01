@@ -9,7 +9,7 @@
 
 | 分支名称                                                    | Spring Boot Version |
 | ------------------------------------------------------------ | ------------------- |
-| [spring-boot-3.x](https://github.com/ZHENFENG13/My-Column/tree/spring-boot-3.x) | 3.0.0       |
+| [spring-boot-3.x](https://github.com/ZHENFENG13/My-Column/tree/spring-boot-3.x) | 3.1.0       |
 | [main](https://github.com/ZHENFENG13/My-Column)            | 2.4.0               |
 
 - **一个仿知乎专栏的 Spring Boot 实战项目；**
