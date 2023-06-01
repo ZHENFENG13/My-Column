@@ -4,11 +4,11 @@
 
 **坚持不易，各位朋友如果觉得项目还不错的话可以给项目一个 star 吧，也是对我一直更新代码的一种鼓励啦，谢谢各位的支持。**
 
-当前分支的 Spring Boot 版本为 3.0.1，Java 最低版本要求为 17，想要学习和使用其它版本可以直接点击下方的分支名称跳转至对应的仓库分支中。
+当前分支的 Spring Boot 版本为 3.x，Java 最低版本要求为 17，想要学习和使用其它版本可以直接点击下方的分支名称跳转至对应的仓库分支中。
 
 | 分支名称                                                    | Spring Boot Version |
 | ------------------------------------------------------------ | ------------------- |
-| [spring-boot-3.x](https://github.com/ZHENFENG13/My-Column/tree/spring-boot-3.x) | 3.0.1       |
+| [spring-boot-3.x](https://github.com/ZHENFENG13/My-Column/tree/spring-boot-3.x) | 3.1.0       |
 | [main](https://github.com/ZHENFENG13/My-Column)            | 2.4.0               |
 
 - **一个仿知乎专栏的 Spring Boot 实战项目；**
